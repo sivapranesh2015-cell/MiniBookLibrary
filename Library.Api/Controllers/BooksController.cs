@@ -1,5 +1,6 @@
 ﻿using Library.Application.DTOs;
 using Library.Application.Services.Interface;
+using Library.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +24,7 @@ namespace Library.Api
         public async Task<IActionResult> AddBook([FromBody] CreateBookDto createBookDto)
         {
             var createdBook = await _service.AddBookAsync(createBookDto);
-            return Ok(createdBook);
+            return CreatedAtAction(nameof(GetByID), new { id = createdBook.Id }, createdBook);
         
         }
 
@@ -59,6 +60,8 @@ namespace Library.Api
         {
 
             var updated = await _service.UpdateBookAsync(id, updateBookDto);
+            if (updated is null)
+                return NotFound("Book with ID " + id + "Not available");
             return Ok(updated);
         
         }

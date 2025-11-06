@@ -22,6 +22,12 @@ namespace Library.Application.Services.Implementation
         {
             _repo = repo;
         }
+
+        /// <summary>
+        /// Below method is used to add a new book into the system
+        /// </summary>
+        /// <param name="bookDto"></param>
+        /// <returns></returns>
         public async Task<BookDto> AddBookAsync(CreateBookDto bookDto)
         {
             var allBooks = await _repo.GetAllBooksAsync();
@@ -34,10 +40,7 @@ namespace Library.Application.Services.Implementation
             return BookMapper.Map(added);
         }
 
-        public Task<BookDto> AddBookAsync(Book book)
-        {
-            throw new NotImplementedException();
-        }
+       //Below method will retrieve all the books from the In Memory repository
 
         public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
         {
@@ -53,7 +56,7 @@ namespace Library.Application.Services.Implementation
             }
 
         }
-
+        //Below method will retrieve the books that are available in the In Memory repository
         public async Task<IEnumerable<BookDto>> GetAvailableBooksAsync()
         {
             try
@@ -68,15 +71,16 @@ namespace Library.Application.Services.Implementation
             }
         }
 
+        //Below method will retrieve the a single book based on the book ID
         public async Task<BookDto?> GetBookByIdAsync(int id)
         {
             var book = await _repo.GetBookByIdAsync(id);
             if(book is null)
                 throw new NotFoundException(nameof(Book), id);
-            //return book is null ? null : BookMapper.Map(book);
+            
             return BookMapper.Map(book);
         }
-
+        //Below method will remove the a single book based on the book ID
         public async Task<bool> RemoveBookAsync(int id)
         {
             var existingBook = await _repo.GetBookByIdAsync(id);
@@ -85,7 +89,7 @@ namespace Library.Application.Services.Implementation
                 throw new Exception("Book with ID " + id + " Not found");
             return await _repo.DeleteBookAsync(id);
         }
-
+        //Below method will update the a single book based on the book ID
         public async Task<BookDto> UpdateBookAsync(int id, UpdateBookDto updateBookDto)
         {
             var existingBook = await _repo.GetBookByIdAsync(id);
